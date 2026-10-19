@@ -1,0 +1,24 @@
+{{ template "head" . }}
+<h1>Trust registry</h1>
+<p class="muted">A registry publishes a signed list of clients and the categories each is verified for. Servers consult it before answering client-tier reads; you can consult it before trusting a client you meet.</p>
+<form class="card" method="get" action="/trust">
+  <label for="origin">Registry origin</label>
+  <input id="origin" name="origin" type="text" value="{{ .Subject }}">
+  <button type="submit" style="margin-top:10px">Fetch and verify</button>
+</form>
+{{ if .Error }}<div class="err">{{ .Error }}</div>{{ end }}
+{{ template "steps" . }}
+{{ if .Trust }}
+<div class="card">
+  <h2>{{ .Trust.Kind }} list · issued {{ .Trust.Issued }} · expires {{ .Trust.Expires }}</h2>
+  {{ if .Trust.Entries }}
+  <table>
+    <tr><th>Entity</th><th>Client ID</th><th>Verified for</th><th>State</th></tr>
+    {{ range .Trust.Entries }}
+    <tr><td>{{ .Entity }}</td><td class="mono">{{ .ClientID }}</td><td>{{ range .Verifications }}<span class="tier">{{ .Category }}</span> {{ end }}</td><td>{{ if .Revoked }}revoked{{ else }}active{{ end }}</td></tr>
+    {{ end }}
+  </table>
+  {{ else }}<p class="muted">No entries yet. The signature still verifies, so a subscriber knows the registry is live and empty rather than unreachable.</p>{{ end }}
+</div>
+{{ end }}
+{{ template "foot" . }}

@@ -1,0 +1,15 @@
+{{ template "head" . }}
+<h1>One card, three ways to read it</h1>
+<p class="muted">Every page here does the protocol steps in the open and lists them afterwards. Server: <span class="mono">{{ .Cfg.DefaultHost }}</span>{{ if not .HasClient }} · client tier not configured (set OPI_CLIENT_ID and OPI_CLIENT_SECRET){{ end }}</p>
+<div class="grid">
+  <a href="/public"><strong>Public</strong><span class="muted">No credentials. WebFinger, fetch, verify the signature.</span></a>
+  <a href="/client"><strong>Trusted app</strong><span class="muted">Client credentials. What the person set to “Trusted apps”, filtered by your category.</span></a>
+  <a href="/ask"><strong>Ask the person</strong><span class="muted">Authorization code + PKCE with a purpose and retention. They tick what you get.</span></a>
+  <a href="/trust"><strong>Trust list</strong><span class="muted">Fetch the registry’s signed list and check who is verified for what.</span></a>
+</div>
+<div class="card">
+  <h2>Try it</h2>
+  <p>Any handle on {{ .Cfg.DefaultHost }} works for the public page. Try <a href="/public?subject=admin">admin</a>.</p>
+  <p class="muted">Source and protocol notes: github.com/openpreference/example-client · specs at openpreference.org/specs</p>
+</div>
+{{ template "foot" . }}

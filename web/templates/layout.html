@@ -1,0 +1,68 @@
+{{ define "head" }}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ .Title }} · OPI example client</title>
+<style>
+  :root { --ink:#16202C; --muted:#536074; --line:#D8DEE8; --teal:#0E6B70; --teal-ink:#0A5357; --tint:#DDF1F0; --page:#F3F5F9; --danger:#B3261E; --danger-soft:#FBE9E7; }
+  @media (prefers-color-scheme: dark) { :root { --ink:#E8EDF4; --muted:#A2AEBF; --line:#2B3542; --teal:#5CC4C8; --teal-ink:#8ADEE1; --tint:#16343A; --page:#0F141A; --danger:#F28B82; --danger-soft:#3A1E1C; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { display: flex; align-items: center; gap: 16px; padding: 14px 20px; border-bottom: 1px solid var(--line); }
+  header a { color: var(--ink); text-decoration: none; font-weight: 600; }
+  header nav a { font-weight: 500; color: var(--muted); margin-left: 14px; }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 24px; margin: 0 0 6px; } h2 { font-size: 17px; margin: 0 0 8px; }
+  p { margin: 0 0 12px; } .muted { color: var(--muted); } .mono { font-family: ui-monospace, Menlo, monospace; font-size: 13px; }
+  .card { background: color-mix(in srgb, var(--page) 60%, #fff 40%); border: 1px solid var(--line); border-radius: 12px; padding: 18px; margin: 16px 0; }
+  @media (prefers-color-scheme: dark) { .card { background: #171E27; } }
+  label { display: block; font-weight: 600; font-size: 13.5px; margin: 10px 0 4px; }
+  input[type=text] { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font: inherit; background: transparent; color: var(--ink); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 12px; }
+  .chips label { display: inline-flex; align-items: center; gap: 6px; margin: 0; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; font-weight: 500; cursor: pointer; }
+  button { font: inherit; font-weight: 600; padding: 10px 18px; border-radius: 8px; border: 1px solid var(--teal); background: var(--teal); color: #fff; cursor: pointer; }
+  @media (prefers-color-scheme: dark) { button { color: #0F141A; } }
+  .err { background: var(--danger-soft); color: var(--danger); border-radius: 8px; padding: 10px 14px; margin: 12px 0; }
+  .steps { background: var(--tint); color: var(--teal-ink); border-radius: 8px; padding: 10px 14px; margin: 12px 0; font-size: 13.5px; }
+  .steps ol { margin: 0; padding-left: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; } th { text-align: left; color: var(--muted); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--line); } td { padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  pre { margin: 0; white-space: pre-wrap; font-size: 12.5px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+  .grid a { display: block; padding: 16px; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); text-decoration: none; }
+  .grid a strong { display: block; margin-bottom: 4px; }
+  .tier { display: inline-block; padding: 2px 10px; border-radius: 999px; background: var(--tint); color: var(--teal-ink); font-size: 12px; font-weight: 700; }
+</style>
+</head>
+<body>
+<header>
+  <a href="/">OPI example client</a>
+  <nav><a href="/public">Public</a><a href="/client">Trusted app</a><a href="/ask">Ask the person</a><a href="/trust">Trust list</a></nav>
+</header>
+<main>
+{{ end }}
+
+{{ define "foot" }}
+</main>
+</body>
+</html>
+{{ end }}
+
+{{ define "bundle" }}
+<div class="card">
+  <h2>Verified bundle <span class="tier">{{ .Tier }}</span></h2>
+  <p class="muted small mono">sub {{ .Bundle.Subject }} · iss {{ .Bundle.Issuer }} · kid {{ .Bundle.KeyID }} · exp {{ unix .Bundle.ExpiresAt }}</p>
+  {{ if .Bundle.Preferences }}
+  <table>
+    <tr><th>Type</th><th>Version</th><th>Value</th></tr>
+    {{ range .Bundle.Preferences }}
+    <tr><td class="mono">{{ short .Type }}{{ if .Categories }}<br><span class="muted">{{ join .Categories ", " }}</span>{{ end }}</td><td class="mono">{{ .Version }}</td><td><pre>{{ json .Value }}</pre></td></tr>
+    {{ end }}
+  </table>
+  {{ else }}<p class="muted">The bundle verified but carries no preferences at this tier.</p>{{ end }}
+</div>
+{{ end }}
+
+{{ define "steps" }}
+{{ if .Step }}<div class="steps"><ol>{{ range .Step }}<li>{{ . }}</li>{{ end }}</ol></div>{{ end }}
+{{ end }}

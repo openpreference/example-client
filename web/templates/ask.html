@@ -1,0 +1,24 @@
+{{ template "head" . }}
+<h1>{{ .Title }}</h1>
+<p class="muted">The person is sent to their own server, sees who is asking, why, and for how long, and ticks what they are willing to share. You get back only that.</p>
+{{ if not .HasClient }}
+<div class="err">User tier needs a registered client. Register one at https://{{ .Cfg.DefaultHost }}/developer with redirect URI {{ .Cfg.RedirectURL }}, then start this demo with OPI_CLIENT_ID and OPI_CLIENT_SECRET set.</div>
+{{ else }}
+<form class="card" method="get" action="/ask">
+  <input type="hidden" name="go" value="1">
+  <label for="subject">Their address</label>
+  <input id="subject" name="subject" type="text" value="{{ .Subject }}" placeholder="acct:alice@{{ .Cfg.DefaultHost }} or just alice">
+  <label>Ask for</label>
+  <div class="chips">
+    {{ $sel := .Types }}{{ range $t := .AllTypes }}<label><input type="checkbox" name="type" value="{{ $t }}"{{ range $s := $sel }}{{ if eq $s $t }} checked{{ end }}{{ end }}> {{ $t }}</label>{{ end }}
+  </div>
+  <label for="purpose">Why (shown on their consent screen)</label>
+  <input id="purpose" name="purpose" type="text" value="{{ .Purpose }}" maxlength="500">
+  <label for="retention">Retention (ISO 8601 duration)</label>
+  <input id="retention" name="retention" type="text" value="{{ .Retention }}" placeholder="P30D">
+  <p class="muted" style="margin-top:12px">You will be redirected to their server and back to {{ .Cfg.RedirectURL }}.</p>
+  <button type="submit">Ask</button>
+</form>
+{{ end }}
+{{ if .Error }}<div class="err">{{ .Error }}</div>{{ end }}
+{{ template "foot" . }}

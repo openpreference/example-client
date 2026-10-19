@@ -1,0 +1,36 @@
+{{ template "head" . }}
+<h1>{{ .Title }}</h1>
+{{ if eq .Tier "public" }}<p class="muted">Reads what the person set to Everyone. No token, no registration, just WebFinger and a signature check.</p>{{ end }}
+{{ if eq .Tier "client" }}<p class="muted">Reads what the person set to Trusted apps, if this client is on the registry for a category they allow. Every read is logged to their Activity.</p>{{ end }}
+{{ if eq .Tier "user" }}<p class="muted">Result of the consent flow.</p>{{ end }}
+
+{{ if and (eq .Tier "client") (not .HasClient) }}
+<div class="err">Client tier is not configured. Register a client at https://{{ .Cfg.DefaultHost }}/developer and start this demo with OPI_CLIENT_ID and OPI_CLIENT_SECRET set.</div>
+{{ else if ne .Tier "user" }}
+<form class="card" method="get" action="/{{ .Tier }}">
+  <label for="subject">Address</label>
+  <input id="subject" name="subject" type="text" value="{{ .Subject }}" placeholder="acct:alice@{{ .Cfg.DefaultHost }} or just alice">
+  <label>Only these types (optional)</label>
+  <div class="chips">
+    {{ $sel := .Types }}{{ range $t := .AllTypes }}<label><input type="checkbox" name="type" value="{{ $t }}"{{ range $s := $sel }}{{ if eq $s $t }} checked{{ end }}{{ end }}> {{ $t }}</label>{{ end }}
+  </div>
+  <button type="submit">Read</button>
+</form>
+{{ end }}
+
+{{ if .Error }}<div class="err">{{ .Error }}</div>{{ end }}
+{{ template "steps" . }}
+{{ if .Disc }}
+<div class="card">
+  <h2>Discovery</h2>
+  <table>
+    <tr><th>Subject</th><td class="mono">{{ .Disc.Subject }}</td></tr>
+    <tr><th>Server</th><td class="mono">{{ .Disc.Origin }}</td></tr>
+    <tr><th>Tiers offered</th><td class="mono">{{ join .Disc.Tiers " " }}</td></tr>
+    <tr><th>Preferences</th><td class="mono">{{ .Disc.PreferencesURL }}</td></tr>
+    <tr><th>Keys</th><td class="mono">{{ .Disc.KeysURL }}</td></tr>
+  </table>
+</div>
+{{ end }}
+{{ if .Bundle }}{{ template "bundle" . }}{{ end }}
+{{ template "foot" . }}

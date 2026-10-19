@@ -91,7 +91,7 @@ func newFakeServer(t *testing.T) *fakeServer {
 		w.Write([]byte(sign(f.trustKey, "trust-1", JWTTypeTrust, map[string]any{
 			"schema": SchemaTrust, "kind": "full", "registry": origin + "/trust/registry",
 			"issued": time.Now().UTC().Format(time.RFC3339), "expires": time.Now().Add(24 * time.Hour).UTC().Format(time.RFC3339),
-			"entries": []map[string]any{{"entity": "https://grocer.test", "client_id": "opi_client_grocer", "verifications": []map[string]any{{"category": "retail", "verified_at": "2026-10-01T00:00:00Z"}}}},
+			"entries": []map[string]any{{"entity": "https://grocer.test", "client_id": "opi_client_grocer", "verifications": []map[string]any{{"category": CategoryNamespace + "retail", "verified_at": "2026-10-01T00:00:00Z"}}}},
 		})))
 	})
 	return f
@@ -164,7 +164,7 @@ func TestTrustList(t *testing.T) {
 	if l.Kind != "full" || len(l.Entries) != 1 || l.KeyID != "trust-1" {
 		t.Fatalf("unexpected list: %+v", l)
 	}
-	if !l.Trusted("opi_client_grocer", "retail") || l.Trusted("opi_client_grocer", "finance") || l.Trusted("nobody", "") {
+	if !l.Trusted("opi_client_grocer", CategoryNamespace+"retail") || l.Trusted("opi_client_grocer", CategoryNamespace+"finance") || l.Trusted("nobody", "") {
 		t.Fatal("Trusted() verdicts wrong")
 	}
 }

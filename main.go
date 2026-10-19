@@ -121,7 +121,7 @@ func trust(ctx context.Context, c *opi.Client, args []string) error {
 	for _, e := range l.Entries {
 		var cats []string
 		for _, v := range e.Verifications {
-			cats = append(cats, v.Category)
+			cats = append(cats, opi.ShortCategory(v.Category))
 		}
 		state := "active"
 		if e.Revoked {

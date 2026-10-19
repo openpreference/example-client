@@ -57,6 +57,7 @@ type pendingAuth struct {
 func Serve(cfg Config) error {
 	t, err := template.New("").Funcs(template.FuncMap{
 		"short": opi.ShortType,
+		"shortCat": opi.ShortCategory,
 		"json": func(v json.RawMessage) string {
 			var x any
 			if json.Unmarshal(v, &x) != nil {

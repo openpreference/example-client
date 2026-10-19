@@ -200,6 +200,14 @@ func ShortType(uri string) string {
 	return strings.TrimPrefix(uri, TypeNamespace)
 }
 
+// CategoryNamespace is the prefix of registry category URIs (OPI-TRUST §6).
+const CategoryNamespace = "https://openpreference.org/trust/0.1/categories/"
+
+// ShortCategory trims the category namespace for display.
+func ShortCategory(uri string) string {
+	return strings.TrimPrefix(uri, CategoryNamespace)
+}
+
 // ReadOptions narrow a read.
 type ReadOptions struct {
 	// Types limits the bundle to these type URIs (?types=, OPI-PD §7.3).

@@ -15,7 +15,7 @@
   <table>
     <tr><th>Entity</th><th>Client ID</th><th>Verified for</th><th>State</th></tr>
     {{ range .Trust.Entries }}
-    <tr><td>{{ .Entity }}</td><td class="mono">{{ .ClientID }}</td><td>{{ range .Verifications }}<span class="tier">{{ .Category }}</span> {{ end }}</td><td>{{ if .Revoked }}revoked{{ else }}active{{ end }}</td></tr>
+    <tr><td>{{ .Entity }}</td><td class="mono">{{ .ClientID }}</td><td>{{ range .Verifications }}<span class="tier">{{ shortCat .Category }}</span> {{ end }}</td><td>{{ if .Revoked }}revoked{{ else }}active{{ end }}</td></tr>
     {{ end }}
   </table>
   {{ else }}<p class="muted">No entries yet. The signature still verifies, so a subscriber knows the registry is live and empty rather than unreachable.</p>{{ end }}

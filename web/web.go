@@ -56,7 +56,7 @@ type pendingAuth struct {
 // Serve runs the demo until the process exits.
 func Serve(cfg Config) error {
 	t, err := template.New("").Funcs(template.FuncMap{
-		"short": opi.ShortType,
+		"short":    opi.ShortType,
 		"shortCat": opi.ShortCategory,
 		"json": func(v json.RawMessage) string {
 			var x any

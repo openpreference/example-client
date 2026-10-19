@@ -110,7 +110,9 @@ func (s *server) render(w http.ResponseWriter, name string, p page) {
 		p.AllTypes = []string{"locale", "units", "accessibility", "dietary", "communications", "content", "marketing", "health/pharmacy"}
 	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'")
+	// form-action also governs the redirect that follows a form submit, and
+	// the consent flow answers a form with a 303 to the person's server.
+	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; form-action 'self' https:")
 	if err := s.tmpl.ExecuteTemplate(w, name, p); err != nil {
 		log.Printf("template %s: %v", name, err)
 	}
